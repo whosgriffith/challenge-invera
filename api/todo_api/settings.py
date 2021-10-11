@@ -30,14 +30,27 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+DJANGO_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.sites",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.admin",
+    "django.forms",
 ]
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "rest_framework.authtoken",
+    #"django_filters",
+]
+
+LOCAL_APPS = [
+    "users.apps.UsersConfig",
+]
+# https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -123,3 +136,18 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Django REST Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
