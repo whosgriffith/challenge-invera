@@ -1,0 +1,24 @@
+version: "3.2"
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./api:/todo-challenge/api
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    command: python3 manage.py runserver 0.0.0.0:8000
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/todo-challenge
+      # One-way volume to use node_modules from inside image
+      - /todo-challenge/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - api
+    command: npm start
