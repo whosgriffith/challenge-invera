@@ -73,10 +73,24 @@ class UserTestCase(TestCase):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Token ' + self.access_token)
 
-        response = client.put(
+        response = client.get(
                 f'/users/{self.user.pk}/', {
                 'username': 'testing_update',
             },
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(json.loads(response.content), {"username":"testing_update"})
+
+
+    def test_update_user(self):
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + self.access_token)
+
+        response = client.put(
+            f'/users/{self.user.pk}/', 
             format='json'
         )
 
