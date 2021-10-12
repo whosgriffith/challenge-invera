@@ -5,13 +5,8 @@ from rest_framework import status, viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.decorators import action
 # Permissions
-from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated
-)
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from users.permissions import IsAccountOwner
-# Filters
-from rest_framework.filters import SearchFilter, OrderingFilter
 # Serializers
 from users.serializers import UserModelSerializer, UserSignUpSerializer, UserLoginSerializer
 # Models
@@ -28,17 +23,13 @@ class UserViewSet(mixins.ListModelMixin,
 
     serializer_class = UserModelSerializer
     lookup_field = 'username'
-    # Filters
-    #filter_backends = (SearchFilter, OrderingFilter)
-    #search_fields = ('username', 'email', 'first_name', 'last_name')
-    #ordering_fields = ('first_name', 'last_name')
     queryset = User.objects.all()
 
     def get_permissions(self):
         """ Assign permissions based on action. """
         if self.action in ['signup', 'login',]:
             permissions = [AllowAny]
-        elif self.action in ['retrieve', 'update', '', 'destroy']:
+        elif self.action in ['retrieve', 'update', 'list', 'destroy']:
             permissions = [IsAuthenticated, IsAccountOwner]
         else:
             permissions = [IsAuthenticated]
