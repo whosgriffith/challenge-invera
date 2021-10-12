@@ -71,31 +71,18 @@ class UserTestCase(TestCase):
     def test_update_user(self):
 
         client = APIClient()
-        client.credentials(HTTP_AUTHORIZATION='Token ' + self.access_token)
-
-        response = client.get(
-                f'/users/{self.user.pk}/', {
-                'username': 'testing_update',
-            },
-            format='json'
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(json.loads(response.content), {"username":"testing_update"})
-
-
-    def test_update_user(self):
-
-        client = APIClient()
-        client.credentials(HTTP_AUTHORIZATION='Token ' + self.access_token)
+        client.credentials(HTTP_AUTHORIZATION='Token ' + self.access_token)    
 
         response = client.put(
-            f'/users/{self.user.pk}/', 
+            '/users/testing_login/', 
+            {'username': 'testing_update'},
             format='json'
         )
 
+        result = json.loads(response.content)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(json.loads(response.content), {"username":"testing_update"})
+        self.assertIn(result, {'username': 'testing_update'})
 
 
     def test_delete_user(self):
@@ -104,7 +91,7 @@ class UserTestCase(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Token ' + self.access_token)
 
         response = client.delete(
-            f'/education/{self.user.pk}/', 
+            '/users/testing_login/', 
             format='json'
         )
 
