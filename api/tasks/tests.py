@@ -9,7 +9,8 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 # Models
-from users.models import User, Task
+from users.models import User
+from tasks.models import Task
 
 
 class TaskTestCase(TestCase):
@@ -45,23 +46,17 @@ class TaskTestCase(TestCase):
         }
 
         response = client.post(
-            '/tasks/create/', 
+            '/tasks/', 
             test_task,
             format='json'
         )
 
         result = json.loads(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn('pk', result)
         self.assertIn('user', result)
         self.assertIn('title', result)
         self.assertIn('is_completed', result)
         self.assertIn('date', result)
-
-        if 'pk' in result:
-            del result['pk']
-
-        self.assertEqual(result, test_task)
 
     
     def test_update_task(self):

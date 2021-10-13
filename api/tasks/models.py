@@ -4,7 +4,7 @@
 from django.db import models
 
 
-class Task():
+class Task(models.Model):
     ''' Task model.
     This model represents each task that the user can add.
     '''

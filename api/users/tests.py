@@ -82,7 +82,7 @@ class UserTestCase(TestCase):
         result = json.loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(result, {'username': 'testing_update'})
+        self.assertEqual(result['username'], 'testing_update')
 
 
     def test_delete_user(self):
