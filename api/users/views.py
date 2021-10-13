@@ -1,4 +1,4 @@
-""" User views. """
+""" User views """
 
 # Django REST Framework
 from rest_framework import status, viewsets, mixins
@@ -6,15 +6,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 # Permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from users.permissions import IsAccountOwner
+from utils.permissions import IsAccountOwner
 # Serializers
 from users.serializers import UserModelSerializer, UserSignUpSerializer, UserLoginSerializer
 # Models
 from users.models import User
 
 
-class UserViewSet(mixins.ListModelMixin,
-                  mixins.UpdateModelMixin,
+class UserViewSet(mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin,
                   viewsets.GenericViewSet):
     """ UserViewSet
@@ -29,7 +28,7 @@ class UserViewSet(mixins.ListModelMixin,
         """ Assign permissions based on action. """
         if self.action in ['signup', 'login',]:
             permissions = [AllowAny]
-        elif self.action in ['retrieve', 'update', 'list', 'destroy']:
+        elif self.action in ['retrieve', 'update', 'current', 'destroy']:
             permissions = [IsAuthenticated, IsAccountOwner]
         else:
             permissions = [IsAuthenticated]
@@ -56,11 +55,8 @@ class UserViewSet(mixins.ListModelMixin,
         }
         return Response(data=data, status=status.HTTP_200_OK)
 
-    def list(self, request, *args, **kwargs):
-        """ Override list method so it only returns current user username. """
+    @action(detail=False, methods=['GET'])
+    def current(self, request, *args, **kwargs):
+        """ Returns current user username. """
         data = {"username": request.user.username}
         return Response(data, status=status.HTTP_200_OK)
-
-    def perform_destroy(self, instance):
-        """ Deletes the user from the database. """
-        instance.delete()

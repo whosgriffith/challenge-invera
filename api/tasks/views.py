@@ -1,4 +1,4 @@
-""" Tasks views. """
+""" Tasks views """
 
 # Django REST Framework
 from rest_framework import status, viewsets, mixins
@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 # Permissions
 from rest_framework.permissions import IsAuthenticated
-from tasks.permissions import IsObjectOwner
+from utils.permissions import IsObjectOwner
 # Serializers
 from tasks.serializers import TaskModelSerializer, TaskUpdateSerializer
 from tasks.models import Task
@@ -43,12 +43,6 @@ class TaskViewSet(mixins.CreateModelMixin,
         else:
             permissions = [IsAuthenticated]
         return [p() for p in permissions]
-
-    def perfom_create(self, serializer):
-        """ Create new task. """
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['POST'])
     def complete(self, request, *args, **kwargs):
