@@ -7,6 +7,9 @@ from rest_framework.decorators import action
 # Permissions
 from rest_framework.permissions import IsAuthenticated
 from utils.permissions import IsObjectOwner
+# Filters
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 # Serializers
 from tasks.serializers import TaskModelSerializer, TaskUpdateSerializer
 from tasks.models import Task
@@ -21,6 +24,15 @@ class TaskViewSet(mixins.CreateModelMixin,
     Handle create, completion ,update, retrieve and destroy.
     """
     
+    # Filters
+    # Filter by title, date, and completed status. 
+    # Using search, is_completed and ordering params.
+    filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
+    search_fields = ('title', 'date')
+    ordering_fields = ('is_completed', 'date')
+    ordering = ('is_completed',)
+    filter_fields = ('is_completed',)
+
     def get_queryset(self):
         """
         Sets the queryset so it returns only the current user tasks.
