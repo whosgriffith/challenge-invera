@@ -64,7 +64,7 @@ The response will contain the username and the token for authentication, as foll
 | password |
 
 
-#### Retrieve user
+#### Get current user
 ```http
 GET /users/current/
 ```
@@ -82,7 +82,7 @@ This will retrieve the username of the current user, as following:
 | authorization | token `user token` |
 
 
-#### Update users/profiles
+#### Update users
 ```http
 PUT /users/`username`/
 ```
@@ -92,6 +92,18 @@ The update of the user applies only to the username.
 | Form Keys |
 | ------------ |
 | username |
+
+#### Change password
+```http
+PUT /users/change_password/
+```
+
+Change the user password.
+
+| Form Keys |
+| ------------ |
+| password |
+| new_password |
 
 #### Delete user
 ```http
@@ -121,6 +133,7 @@ The only required field is the title.
 | Form Keys |
 | ------------ |
 | title |
+| limit_date (Optional) |
 
 #### List tasks
 ```http
@@ -129,44 +142,59 @@ GET /tasks/'filters'
 This will retrieve a list of tasks created by the user (15 at a time, if the user has more than 15 tasks, pagination will be applied), as following:
 ```
 {
-"count":  21,
-"next":  "http://domain/tasks/?page=2",
-"previous":  null,
-"results":  [
-	{
-		"user":  "nicolas",
-		"title":  "Task number 1",
-		"is_completed":  false,
-		"date":  "2021-10-14"
-	},
-	{
-		"user":  "nicolas",
-		"title":  "Task number 2",
-		"is_completed":  false,
-		"date":  "2021-10-14"
-	},
-	{
-		"user":  "nicolas",
-		"title":  "Task number 3",
-		"is_completed":  false,
-		"date":  "2021-10-14"
-	},
-	{
-		"user":  "nicolas",
-		"title":  "Task number 4",
-		"is_completed":  false,
-		"date":  "2021-10-14"
-	},
-	{
-		"user":  "nicolas",
-		"title":  "Task number 5",
-		"is_completed":  false,
-		"date":  "2021-10-14"
-	},
-	
-	...
-	
-	]
+    "count": 6,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "pk": 1,
+            "user": "nicolas",
+            "title": "Task number 1",
+            "is_completed": false,
+            "date": "2021-10-14",
+            "limit_date": null
+        },
+        {
+            "pk": 5,
+            "user": "nicolas",
+            "title": "Task number 2",
+            "is_completed": false,
+            "date": "2021-10-14",
+            "limit_date": null
+        },
+        {
+            "pk": 6,
+            "user": "nicolas",
+            "title": "Task number 5",
+            "is_completed": false,
+            "date": "2021-10-14",
+            "limit_date": null
+        },
+        {
+            "pk": 2,
+            "user": "nicolas",
+            "title": "Task number 3",
+            "is_completed": false,
+            "date": "2021-10-14",
+            "limit_date": "2021-10-14"
+        },
+        {
+            "pk": 3,
+            "user": "nicolas",
+            "title": "Task number 4",
+            "is_completed": false,
+            "date": "2021-10-14",
+            "limit_date": "2022-02-03"
+        },
+        {
+            "pk": 4,
+            "user": "nicolas",
+            "title": "Task number 6",
+            "is_completed": false,
+            "date": "2021-10-14",
+            "limit_date": "2025-12-02"
+        }
+    ]
 }
 ```
 
@@ -179,9 +207,11 @@ For filtering the following parameters can be aplied in the url:
 
 | Filter by | Value |
 | ------------ | ------------ |
-| Search | `title or date` |
-| Ordering| `is_completed or date` |
-| is_completed| `True/1 or False/0` |
+| Search | `title` |
+| Ordering | `is_completed, date, limit_date` |
+| is_completed | `True/1 or False/0` |
+| date | `date` |
+| limit_date | `date` |
 
 By default the not completed tasks will appear first.
 
