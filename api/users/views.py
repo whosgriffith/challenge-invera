@@ -49,8 +49,9 @@ class UserViewSet(mixins.UpdateModelMixin,
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user, token = serializer.save()
+        username = UserModelSerializer(user).data['username']
         data = {
-            'username': UserModelSerializer(user).data,
+            'username': username,
             'access_token': token
         }
         return Response(data=data, status=status.HTTP_200_OK)
