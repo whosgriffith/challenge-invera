@@ -1,0 +1,213 @@
+# Todo Challenge for Invera
+
+![](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray)
+
+
+#### Introduction
+This API works as a task app, where you can create, delete, edit, and complete tasks. 
+For using this app an account is needed, the tasks of each user are saved in a database and can be retrieved only by its creator.
+
+#### Authentication
+The API uses the [DRF TokenAuthentication](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication "Django TokenAuthentication") system.
+
+#### Status Codes
+
+| Status Code | Description |
+| ------------ | ------------ |
+| 200 | `OK` |
+| 201 | `CREATED` |
+| 204 | `NO CONTENT` |
+| 400 | `BAD REQUEST` |
+| 403 | `FORBIDDEN` |
+| 404 | `NOT FOUND` |
+| 500 | `INTERNAL SERVER ERROR` |
+
+
+#### Response behaviour
+The response can contain data as a value (text or list) of the `'detail'` key.
+
+When creating or updating a user or task (`201 CREATED`/`200 OK`), it will always return the created/updated object. 
+
+When deleting, the response will only be a `204 NO CONTENT` and no data will be returned.
+
+
+## Users
+
+#### Create users
+```http
+POST /users/signup/
+```
+The needed values for creating user accounts are the ones from the user, the profile information its not required when creating a user.
+
+| Form Keys |
+| ------------ |
+| username |
+| password |
+| password_confirmation |
+
+#### Login user
+```http
+POST /users/login/
+```
+The response will contain the username and the token for authentication, as following:
+
+```
+{
+"username":  "nicolas",
+"access_token":  "dc47c4a70e930a6b890fc80fba701a581ee6b846"
+}
+```
+
+| Form Keys |
+| ------------ |
+| username |
+| password |
+
+
+#### Retrieve user
+```http
+GET /users/current/
+```
+This will retrieve the username of the current user, as following:
+
+```
+{
+"username":  "nicolas"
+}
+```
+
+
+| Headers | Value |
+| ------------ | ------------ |
+| authorization | token `user token` |
+
+
+#### Update users/profiles
+```http
+PUT /users/`username`/
+```
+
+The update of the user applies only to the username.
+
+| Form Keys |
+| ------------ |
+| username |
+
+#### Delete user
+```http
+DELETE /users/'username'/
+```
+
+This will delete the user from the database.
+
+| Headers | Value |
+| ------------ | ------------ |
+| authorization | token `user token` |
+
+## Tasks
+#### Create task
+```http
+POST /tasks/
+```
+This request will create a task, and return it.
+Anyone who is logged in can create a task.
+
+| Headers | Value |
+| ------------ | ------------ |
+| authorization | token `user token` |
+
+The only required field is the title.
+
+| Form Keys |
+| ------------ |
+| title |
+
+#### List tasks
+```http
+GET /tasks/'filters'
+```
+This will retrieve a list of tasks created by the user (15 at a time, if the user has more than 15 tasks, pagination will be applied), as following:
+```
+{
+"count":  21,
+"next":  "http://domain/tasks/?page=2",
+"previous":  null,
+"results":  [
+	{
+		"user":  "nicolas",
+		"title":  "Task number 1",
+		"is_completed":  false,
+		"date":  "2021-10-14"
+	},
+	{
+		"user":  "nicolas",
+		"title":  "Task number 2",
+		"is_completed":  false,
+		"date":  "2021-10-14"
+	},
+	{
+		"user":  "nicolas",
+		"title":  "Task number 3",
+		"is_completed":  false,
+		"date":  "2021-10-14"
+	},
+	{
+		"user":  "nicolas",
+		"title":  "Task number 4",
+		"is_completed":  false,
+		"date":  "2021-10-14"
+	},
+	{
+		"user":  "nicolas",
+		"title":  "Task number 5",
+		"is_completed":  false,
+		"date":  "2021-10-14"
+	},
+	
+	...
+	
+	]
+}
+```
+
+| Headers | Value |
+| ------------ | ------------ |
+| authorization | token `user token` |
+
+
+For filtering the following parameters can be aplied in the url:
+
+| Filter by | Value |
+| ------------ | ------------ |
+| Search | `title or date` |
+| Ordering| `is_completed or date` |
+| is_completed| `True/1 or False/0` |
+
+By default the not completed tasks will appear first.
+
+#### Update task
+```http
+PATCH /tasks/'id'/
+```
+Only the title of a task can be changed.
+
+Only the user who created the task can update it.
+
+| Headers | Value |
+| ------------ | ------------ |
+| authorization | token `user token` |
+
+| Form Keys |
+| ------------ |
+| title |
+
+#### Delete task
+```http
+DELETE /tasks/'id'/
+```
+
+Only the user who created the task can delete it.
+
+| Headers | Value |
+| ------------ | ------------ |
+| authorization | token `user token` |
