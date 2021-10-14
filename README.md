@@ -7,6 +7,11 @@
 This API works as a task app, where you can create, delete, edit, and complete tasks. 
 For using this app an account is needed, the tasks of each user are saved in a database and can be retrieved only by its creator.
 
+#### How to launch the API in local
+The API is configured with Docker for an easy setup in any machine.
+Just clone the repository and run ```docker-compose up --build```
+The docker configuration consists of 1 service/image called API but it could be configurated easily with 2 services, for backend and frontend.
+
 #### Authentication
 The API uses the [DRF TokenAuthentication](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication "Django TokenAuthentication") system.
 
