@@ -27,5 +27,7 @@ class Task(models.Model):
 
     date = models.DateField(auto_now_add=True)
 
+    limit_date = models.DateField(null=True)
+
     def __str__(self):
         return self.title

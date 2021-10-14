@@ -65,13 +65,13 @@ class UserViewSet(mixins.UpdateModelMixin,
     @action(detail=False, methods=['PUT'])
     def change_password(self, request, *args, **kwargs):
         """ Change user password. """
-        user = request.user
         serializer = ChangePasswordSerializer(data=request.data)
+        user = request.user
 
         if serializer.is_valid():
             # Verify current password
             if not user.check_password(request.data.get("password")):
-                return Response({"detail": "Old password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"password": ["Old password is incorrect."]}, status=status.HTTP_400_BAD_REQUEST)
             
             # Change the user password    
             user.set_password(serializer.data.get("new_password"))
