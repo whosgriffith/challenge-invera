@@ -28,10 +28,10 @@ class TaskViewSet(mixins.CreateModelMixin,
     # Filter by title, date, and completed status. 
     # Using search, is_completed and ordering params.
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
-    search_fields = ('title', 'date', 'limit_date')
+    search_fields = ('title')
     ordering_fields = ('is_completed', 'date', 'limit_date')
     ordering = ('is_completed', 'limit_date')
-    filter_fields = ('is_completed', 'limit_date')
+    filter_fields = ('is_completed', 'date', 'limit_date')
 
     def get_queryset(self):
         """
