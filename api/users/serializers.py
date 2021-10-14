@@ -64,3 +64,11 @@ class UserLoginSerializer(serializers.Serializer):
         """ Generate/retrieve token. """
         token, created = Token.objects.get_or_create(user=self.context['user'])
         return self.context['user'], token.key
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """ Serializer for Password change.
+    Handle update of the password.
+    """
+    password = serializers.CharField(max_length=64, required=True)
+    new_password = serializers.CharField(max_length=64, required=True)

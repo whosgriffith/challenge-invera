@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from utils.permissions import IsAccountOwner
 # Serializers
-from users.serializers import UserModelSerializer, UserSignUpSerializer, UserLoginSerializer
+from users.serializers import UserModelSerializer, UserSignUpSerializer, UserLoginSerializer, ChangePasswordSerializer
 # Models
 from users.models import User
 
@@ -61,3 +61,22 @@ class UserViewSet(mixins.UpdateModelMixin,
         """ Returns current user username. """
         data = {"username": request.user.username}
         return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['PUT'])
+    def change_password(self, request, *args, **kwargs):
+        """ Change user password. """
+        user = request.user
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Verify current password
+            if not user.check_password(request.data.get("password")):
+                return Response({"detail": "Old password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Change the user password    
+            user.set_password(serializer.data.get("new_password"))
+            user.save()
+
+            return Response(data={"detail": "Password changed."},status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
